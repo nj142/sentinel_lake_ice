@@ -1,4 +1,4 @@
-Sentinel_Lake_Ice - README for Class Project
+Sentinel_Lake_Ice - README for CEE690 Class Project - Final Code
 
 ---
 
