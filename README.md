@@ -16,8 +16,11 @@ This project implements a **parallelized HPC pipeline** for classifying global l
 ![alt text](<Study_Sites.png>)
 
 I will be using this script to build lake ice time series across the global cryosphere, which will help us understand the role of lake geometry, landscape characteristics, and biome in controlling ice phenology worldwide.  I selected the 44 50x50km  cells shown above from a global equal-area Mollweide sample grid, using the following characteristics: 
+
     1. Cell must have winter isotherm of 2 months below 0* celsius 
+    
     2. Cell must have PLD lake density > 300
+    
     3. Choose 1% of cells from each biome class remaining from the WWF global biome dataset
 
 These 44 grid cells cells consist of more than 42,000 lakes, for which I will download all available satellite imagery in the Sentinel-2 record, build freeze-up and break-up time series for each, and output csv files for ice timing analysis using the DCC.
