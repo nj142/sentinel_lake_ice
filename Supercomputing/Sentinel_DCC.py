@@ -1,5 +1,5 @@
 """
-Sentinel_DCC.py — MPI + multiprocessing Random Forest classification
+Sentinel_DCC.py -- MPI + multiprocessing Random Forest classification
                       for Sentinel-2 imagery on the DCC
 
 WHAT THE SCRIPT DOES
@@ -8,10 +8,10 @@ Point it at one study site's folder of S2 images and a single lake mask,
 and it will:
 
   1. Split the images in that folder evenly across MPI ranks (one rank per
-     CPU task in run.sh — ranks live on the supercomputer's compute nodes).
+     CPU task in run.sh -- ranks live on the supercomputer's compute nodes).
   2. Within each rank, split the lakes for that study site evenly across
-     worker processes (16 workers/rank by default — set in run.sh).
-  3. Run the same ordered list of per-lake steps on every lake — see
+     worker processes (16 workers/rank by default -- set in run.sh).
+  3. Run the same ordered list of per-lake steps on every lake -- see
      `process_lake()` below.  By default STEP 5 calls a Random Forest, but
      you can replace it with band thresholding, NDWI, or any other
      algorithm; you can also insert extra masks as additional STEPs.
@@ -80,7 +80,7 @@ try:
     HAS_MPI = True
 
 except ImportError:
-    print("WARNING: mpi4py not found — running serial (rank 0 of 1)")
+    print("WARNING: mpi4py not found -- running serial (rank 0 of 1)")
     COMM, RANK, SIZE, HAS_MPI = None, 0, 1, False
 
 
@@ -126,7 +126,7 @@ OUTPUT_DIR = "/hpc/home/nj142/Output"
 # Feature bands present in each S-2 image folder, named exactly as is.
 FEATURE_BANDS = ["B02", "B03", "B04", "B08", "B11", "B12"]
 
-# 10 m reference band — every other band is resampled to its grid, and
+# 10 m reference band -- every other band is resampled to its grid, and
 # its bounding box is used as the image footprint.  (B02 is always 10 m.)
 REF_BAND = "B02"
 
@@ -147,7 +147,7 @@ LAKE_ID_COL = "id"
 # ║  One row is written per lake per image.  Columns come from two       ║
 # ║  places:                                                             ║
 # ║                                                                      ║
-# ║    PER-IMAGE columns  (filled in by HPC machinery — same value for   ║
+# ║    PER-IMAGE columns  (filled in by HPC machinery -- same value for   ║
 # ║                        every lake in a given image):                 ║
 # ║      rank              MPI rank that processed the image             ║
 # ║      study_site        basename of S2_FOLDER                         ║
@@ -159,7 +159,7 @@ LAKE_ID_COL = "id"
 # ║      rf_time_s         wall seconds in pool.map for this image       ║
 # ║      error             error message, or "" on success               ║
 # ║                                                                      ║
-# ║    PER-LAKE columns   (returned from STEP 6 of process_lake — every  ║
+# ║    PER-LAKE columns   (returned from STEP 6 of process_lake -- every  ║
 # ║                        key in that dict becomes a CSV column):       ║
 # ║      lake_id            unique lake ID from the lake mask            ║
 # ║      ice_pixels         ice pixel count from STEP 5                  ║
@@ -179,7 +179,7 @@ LAKE_ID_COL = "id"
 # ║    3. Add its name to OUTPUT_COLUMNS at the end of this section.     ║
 # ║                                                                      ║
 # ║  To remove a column: delete its name from OUTPUT_COLUMNS.  (You can  ║
-# ║  leave it in the STEP 6 dict — extras are silently dropped.)         ║
+# ║  leave it in the STEP 6 dict -- extras are silently dropped.)         ║
 # ║                                                                      ║
 # ╚══════════════════════════════════════════════════════════════════════╝
 
@@ -189,12 +189,12 @@ LAKE_ID_COL = "id"
 # ║                   PER-LAKE PROCESSING STEPS                          ║
 # ║                                                                      ║
 # ║  Each worker calls `process_lake()` ONCE PER LAKE assigned to it.    ║
-# ║  Steps run in the order they appear below — change, reorder, add,    ║
+# ║  Steps run in the order they appear below -- change, reorder, add,    ║
 # ║  or remove steps to alter the analysis.                              ║
 # ║                                                                      ║
 # ║  Common edits:                                                       ║
 # ║    · Replace STEP 5 (Random Forest) with a band threshold, NDWI,     ║
-# ║      or any other classifier — just set ice_pixels & water_pixels.   ║
+# ║      or any other classifier -- just set ice_pixels & water_pixels.   ║
 # ║    · Add a new STEP that ANDs an extra mask into combined_mask       ║
 # ║      (e.g. terrain mask, water-body type, NDWI threshold).           ║
 # ║    · Reorder steps if the data dependencies still hold.              ║
@@ -216,13 +216,13 @@ def process_lake(lake_id, lake_geom, band_data, transform, nodata):
     lake_id    : int                       unique lake identifier
     lake_geom  : shapely.geometry.Polygon  polygon in the raster's CRS
     band_data  : np.ndarray, uint16        shape (n_feature_bands + 1, rows, cols)
-                                           — last slice is SCL
+                                           -- last slice is SCL
     transform  : rasterio.transform.Affine raster-to-world transform
     nodata     : int or None               instrument fill value (None if not set)
 
     Returns
     -------
-    dict — one entry per per-lake CSV column.  See STEP 6 below and
+    dict -- one entry per per-lake CSV column.  See STEP 6 below and
     OUTPUT_COLUMNS at the bottom of this section for the column list.
     """
     n_feature  = len(FEATURE_BANDS)
@@ -239,7 +239,7 @@ def process_lake(lake_id, lake_geom, band_data, transform, nodata):
     # Translate the lake polygon's geographic bounds into pixel
     # row/col indices, giving us a small rectangular window that
     # contains the lake.  Every later step works only on this window
-    # — not the whole 10 980 × 10 980 image — which is the dominant
+    # -- not the whole 10 980 × 10 980 image -- which is the dominant
     # per-lake speedup.
     minx, miny, maxx, maxy = lake_geom.bounds
     row_top, col_left  = rowcol(transform, minx, maxy)
@@ -283,7 +283,7 @@ def process_lake(lake_id, lake_geom, band_data, transform, nodata):
         # ┌────────────────────────────────────────────────────────────────┐
         # │  STEP 4  ·  EXTRACT BAND VALUES FOR SURVIVING PIXELS           │
         # └────────────────────────────────────────────────────────────────┘
-        # Slice ALL bands within the window — feature bands plus SCL — and
+        # Slice ALL bands within the window -- feature bands plus SCL -- and
         # keep only the columns that pass combined_mask.  Result shape:
         #   (n_feature_bands + 1, n_valid_pixels)
         # SCL is included as a feature because the RF model was trained
@@ -297,7 +297,7 @@ def process_lake(lake_id, lake_geom, band_data, transform, nodata):
         # Hand the (bands × pixels) matrix to the trained RF model and
         # tally ice vs. water predictions.  Replace the body of this block
         # with another classifier (band thresholding, NDWI, deep learning,
-        # ...) — just set ice_pixels and water_pixels.
+        # ...) -- just set ice_pixels and water_pixels.
         if pixel_data.size > 0:
             package      = RF_MODEL_PACKAGE
             model        = package["model"]
@@ -334,7 +334,7 @@ def process_lake(lake_id, lake_geom, band_data, transform, nodata):
     # └────────────────────────────────────────────────────────────────┘
     # Each key returned here becomes a per-lake column in the CSV.
     # Per-image columns (rank, year, image_folder, ...) are added
-    # automatically by the HPC machinery — don't include them here.
+    # automatically by the HPC machinery -- don't include them here.
     # If you add a key, also add its name to OUTPUT_COLUMNS below.
     return {
         "lake_id":            lake_id,
@@ -375,7 +375,7 @@ OUTPUT_COLUMNS = [
 # ║                                                                      ║
 # ║                    END OF USER-EDITABLE SECTION                      ║
 # ║                                                                      ║
-# ║  Below: HPC machinery — MPI ranks, multiprocessing pool, POSIX       ║
+# ║  Below: HPC machinery -- MPI ranks, multiprocessing pool, POSIX       ║
 # ║  shared memory, ogr2ogr lake clipping, file discovery, progress      ║
 # ║  CSVs, timing report.  You shouldn't need to edit anything here.     ║
 # ║                                                                      ║
@@ -403,7 +403,7 @@ def _tick(key: str, elapsed: float) -> None:
 
 
 def _timed(key: str):
-    """Context manager — records wall time of the enclosed block into TIMINGS."""
+    """Context manager -- records wall time of the enclosed block into TIMINGS."""
     class _Ctx:
         def __enter__(self):
             self._t0 = time.perf_counter()
@@ -458,7 +458,7 @@ def load_rf_model() -> None:
     """
     Load the trained RF package into RF_MODEL_PACKAGE before the
     multiprocessing pool is forked.  Workers inherit the model via
-    copy-on-write — no re-loading per worker.
+    copy-on-write -- no re-loading per worker.
 
     n_jobs is forced to 1 to avoid contention with the worker pool.
     """
@@ -479,7 +479,7 @@ def load_rf_model() -> None:
 
 def _rf_worker(args: tuple) -> tuple:
     """
-    Multiprocessing worker — handles the shared-memory dance and then
+    Multiprocessing worker -- handles the shared-memory dance and then
     calls the user-defined process_lake() exactly once for one lake.
 
     Shared memory layout
@@ -743,7 +743,7 @@ def discover_files(n_per_site: int | None, seed: int = 42) -> list:
         ]
         if missing:
             print(
-                f"[rank 0] WARNING: {folder_name} missing bands {missing} — skipping",
+                f"[rank 0] WARNING: {folder_name} missing bands {missing} -- skipping",
                 flush=True,
             )
             continue
@@ -835,7 +835,7 @@ def process_image(rec: dict, pool: mp.Pool, tmp_dir: str) -> list:
         )
         # Image-level failure: write one row with the error message.
         # Per-lake fields (lake_id, ice_pixels, ...) are left blank by
-        # the CSV writer's restval — no lakes were processed.
+        # the CSV writer's restval -- no lakes were processed.
         rows = [{**base_row,
                  "n_lakes_in_image": 0,
                  "read_time_s":      round(read_t or elapsed, 4),
@@ -982,7 +982,7 @@ def process_image(rec: dict, pool: mp.Pool, tmp_dir: str) -> list:
     rows = []
     for lake_id, lake_row in results:
         if lake_row is None:
-            # Worker raised — keep lake_id and flag the row; per-lake
+            # Worker raised -- keep lake_id and flag the row; per-lake
             # fields stay blank (handled by the CSV writer's restval).
             rows.append({**base_row, **per_image_metrics,
                          "lake_id": lake_id,
@@ -1006,7 +1006,7 @@ def process_image(rec: dict, pool: mp.Pool, tmp_dir: str) -> list:
 def main():
     if RANK == 0:
         parser = argparse.ArgumentParser(
-            description="RF benchmark S2 — MPI + multiprocessing"
+            description="RF benchmark S2 -- MPI + multiprocessing"
         )
         parser.add_argument("--nimages", type=int, default=None,
                             help="Images to sample from S2_FOLDER (default: all)")
@@ -1071,7 +1071,7 @@ def main():
 
     local_records = scatter_work(records)
 
-    # Load RF model before forking the pool — workers inherit via copy-on-write
+    # Load RF model before forking the pool -- workers inherit via copy-on-write
     load_rf_model()
 
     ctx        = mp.get_context("fork")
