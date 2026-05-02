@@ -55,7 +55,7 @@ Classifying lake ice cover from Sentinel-2 imagery at scale requires processing 
 
 **Step 1. RF Model Loading**
    - Each rank loads the trained Random Forest package (`joblib`) before forking the worker pool.
-   - Workers inherit the model via copy-on-write — no redundant per-worker reloading.
+   - Workers inherit the model via copy-on-write -- no redundant per-worker reloading.
    - `n_jobs` is forced to 1 on the loaded model to avoid thread contention with the worker pool.
 
 **Step 2. Per-Image Raster + Vector Preparation**
