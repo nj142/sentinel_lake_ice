@@ -89,7 +89,7 @@ Classifying lake ice cover from Sentinel-2 imagery at scale requires processing 
 
 ---
 
-## Configuration (User-Editable Section)
+## Configuration (User-Editable Section, designed so my labmates can use this script in the future)
 
 All user-facing settings are contained in the clearly marked `USER-EDITABLE SECTION` at the top of the script. No HPC machinery needs to be touched for typical use, which I hope will be a useful tool for future lab mates looking to utilize the power of the DCC in their work.
 
