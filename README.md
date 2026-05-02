@@ -157,7 +157,7 @@ To add a column: compute its value in `process_lake()`, include it in the return
 | Dataset | Description | Source / Link |
 |---|---|---|
 | **Sentinel-2 SR Imagery (2017–2025)** | Multispectral imagery (L2A) used for ice classification | AWS STAC API |
-| **Prior Lake Database (PLD)** | Global lake mask dataset including lakes ≥ 0.001 km² | [Wang et al. 2025, WRR](https://doi.org/10.1029/2023WR036896) |
+| **Prior Lake Database (PLD)** | Global lake mask dataset including lakes ≥ 0.01 km² | [Wang et al. 2025, WRR](https://doi.org/10.1029/2023WR036896) |
 | **WWF Terrestrial Ecoregions** | Global map of 867 terrestrial ecoregions used to categorize diverse climatic and ecological zones | [Olson et al. 2001, BioScience](https://doi.org/10.1641/0006-3568(2001)051[0933:TEOTWA]2.0.CO;2) |
 | **Labelbox Annotations** | Manual delineations used to supplement lake masks | Generated from prior PhD repository by Noah Jacobs, Annie Cushman, and Lauren Coleman |
 | **Trained RF Model** | `.joblib` package containing model, label encoder, and feature columns | Generated from prior PhD classification workflow |
