@@ -55,7 +55,7 @@ Classifying lake ice cover from Sentinel-2 imagery at scale requires processing 
 
 **Step 1. RF Model Loading**
    - Each rank loads the trained Random Forest package (`joblib`) before forking the worker pool.
-   - Workers inherit the model via copy-on-write -- no redundant per-worker reloading.
+   - Workers inherit the model via copy-on-write to avoid redundant per-worker reload tasks.
    - `n_jobs` is forced to 1 on the loaded model to avoid thread contention with the worker pool.
 
 **Step 2. Per-Image Raster + Vector Preparation**
@@ -66,7 +66,7 @@ Classifying lake ice cover from Sentinel-2 imagery at scale requires processing 
 
 **Step 3. Per-Lake Classification (Worker Pool)**
    - Each worker attaches to the shared memory block and runs `process_lake()` for one lake at a time.
-   - Per lake: compute a pixel-space bounding window → burn lake polygon to mask → remove invalid pixels via SCL → extract surviving band values → classify with the Random Forest → tally ice vs. water predictions.
+   - Per lake: compute a pixel-space bounding window -> burn lake polygon to mask -> remove invalid pixels via SCL -> extract surviving band values -> classify with the Random Forest -> tally ice vs. water predictions.
    - Workers return `(lake_id, result_dict, worker_timings)` tuples; results are aggregated by the parent rank.
 
 **Step 4. Output and Resume**
