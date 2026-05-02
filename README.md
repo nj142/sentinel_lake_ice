@@ -130,7 +130,7 @@ A typical SLURM `run.sh` sets the number of MPI tasks and workers/rank to match 
 
 ## Output CSV Schema
 
-One row is written per lake per image. Columns (can be easily adapted based on how you want your output to look):
+One row is written per lake per image. Columns can be easily adapted based on what you want your output to look like:
 
 | Column | Source | Description |
 |---|---|---|
