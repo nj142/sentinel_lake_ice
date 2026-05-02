@@ -1,3 +1,5 @@
+Sentinel_Lake_Ice - README for Class Project
+
 ---
 
 **Team Members:** Noah Jacobs  
@@ -18,7 +20,7 @@ I will be using this script to build lake ice time series across the global cryo
     2. Cell must have PLD lake density > 300
     3. Choose 1% of cells from each biome class remaining from the WWF global biome dataset
 
-These cells consist of more than 42,000 lakes, for which I will download all available satellite imagery in the Sentinel-2 record, build freeze-up and break-up time series for each, and output csv files for ice timing analysis.
+These 44 grid cells cells consist of more than 42,000 lakes, for which I will download all available satellite imagery in the Sentinel-2 record, build freeze-up and break-up time series for each, and output csv files for ice timing analysis using the DCC.
 
 This project is designed to be modular, so that in the future my lab members can adapt it to run various tasks on lake polygons with the power of the Duke Compute Cluster, without having to build an MPI script from scratch.
 
@@ -27,7 +29,7 @@ This project is designed to be modular, so that in the future my lab members can
 
 ## Problem Statement and Objectives
 
-Classifying lake ice cover from Sentinel-2 imagery at scale requires processing hundreds of images, each containing thousands of individual lake polygons. Running this sequentially is prohibitively slow-- even just a few sites would take months to run on a typical lab PC. The pipeline efficiently distributes both image-level and lake-level work across HPC resources while writing fault-tolerant progress outputs that survive job kills.
+Classifying lake ice cover from Sentinel-2 imagery at scale requires processing hundreds of images, each containing thousands of individual lake polygons. Running this sequentially is prohibitively slow-- even just a few sites would take months to run on a typical lab PC. The pipeline efficiently distributes both image-level and lake-level work across HPC resources while writing fault-tolerant progress outputs that survive runtime stoppage.
 
 **Objectives / Expected Outcomes:**
 
